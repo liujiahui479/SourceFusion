@@ -1,3 +1,5 @@
+# SourceFusion
+
 ## <img height="25" src="https://github.com/philfung/perplexed/blob/main/frontend/public/images/logo-color.svg"/> Perplexed
 #### An open-source app inspired by the amazing web search product, Perplexity.
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://d37ozmhmvu2kcg.cloudfront.net/)
