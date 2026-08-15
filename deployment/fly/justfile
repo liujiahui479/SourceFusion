@@ -1,0 +1,21 @@
+#!/usr/bin/env just --justfile
+
+set shell := ["bash", "-c"]
+
+set working-directory := "../../"
+
+default:
+    @just --justfile ./deployment/fly/justfile --list
+
+
+fly-doctor:
+    flyctl doctor
+
+fly-secrets-import:
+    sed s/'export '//g ./backend/.env | grep -v '^#' | flyctl secrets import
+
+fly-deploy-local:
+    pwd
+    ls Dockerfile
+    flyctl deploy --local-only --no-cache $(PWD) --config deployment/fly/fly.toml && \
+    flyctl status --config deployment/fly/fly.toml

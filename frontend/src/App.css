@@ -1,0 +1,44 @@
+.App {
+
+}
+
+
+.sidebar {
+  z-index: 10;
+}
+
+.sidebar-button {
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-button:hover {
+  background-color: rgba(47, 48, 47, 0.8);
+}
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+.App .answer .answer-text p{
+    margin: 10px 0px 10px 0px;
+}
+
+.App .answer .answer-text p strong{
+    font-size: larger;
+}
+
+.App .answer .answer-text ol {
+    
+    list-style-type: decimal;
+    margin: 0px 0px 0px 10px;
+}
+.App .answer .answer-text ol li {
+    margin: 0px 0px 0px 10px;
+}
+
+.App .answer .answer-text li strong{
+    font-size: large;
+}

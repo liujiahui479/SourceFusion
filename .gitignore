@@ -1,0 +1,15 @@
+__pycache__
+.env
+.venv
+.DS_Store
+bun.lock
+config.json
+package-lock.json
+node_modules
+venv
+.env.production
+build*/
+*/cloudflare/worker-configuration.d.ts
+*/cloudflare/index.js
+.wrangler/
+.dev.vars

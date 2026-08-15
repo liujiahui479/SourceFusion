@@ -1,0 +1,52 @@
+#!/usr/bin/env just --justfile
+
+set shell := ["bash", "-c"]
+
+default:
+    @just --list
+
+
+
+cf-doctor:
+    @echo "Checking Cloudflare setup..."
+    @which wrangler || (echo "Error: wrangler not found. Install with: bun install -g wrangler" && exit 1)
+    @wrangler whoami || (echo "Error: Not authenticated. Run: wrangler login" && exit 1)
+    @echo "✓ Wrangler is installed and authenticated"
+
+cf-setup-secrets env_file="../../backend/.env":
+    @echo "Run these commands manually to paste in the relevant secrets for the Python backend:"
+    @echo "  wrangler secret put --env production GOOGLE_SEARCH_API_KEY"
+    @echo "  wrangler secret put --env production GOOGLE_SEARCH_ENGINE_ID"
+    @echo "  wrangler secret put --env production GROQ_API_KEY"
+
+cf-list-secrets:
+    wrangler secret list --env production --format pretty
+
+
+cf-clean-dist:
+    @mkdir -p ./dist
+    @rm -rf ./dist/frontend-target
+
+
+cf-local: cf-clean-dist
+    @echo "Building frontend for Cloudflare local..."
+    cd ../../ && \
+    just frontend-build-cloudflare-local
+    mv ./dist/frontend-local ./dist/frontend-target
+    @echo "Deploying to Cloudflare local dev mode - access at http://localhost:30001/"
+    wrangler dev --env production --port 30001
+
+
+cf-deploy: cf-clean-dist
+    @echo "Building frontend for Cloudflare deployment..."
+    cd ../.. && \
+    just frontend-build-cloudflare-prod
+    mv ./dist/frontend-prod ./dist/frontend-target
+    @echo "Deploying to Cloudflare Cloud..."
+    wrangler deploy --env production
+
+cf-tail:
+    wrangler tail perplexed-worker --format pretty --env production
+
+cf-status:
+    wrangler deployments status --env production

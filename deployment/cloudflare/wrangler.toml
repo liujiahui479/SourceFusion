@@ -1,0 +1,34 @@
+
+name = "perplexed-worker"
+main = "index.ts"
+compatibility_date = "2025-07-18"
+workers_dev = false
+
+[observability]
+enabled = true
+
+[assets]
+directory = "./dist/frontend-target"
+binding = "ASSETS"
+
+[env.production.vars]
+DOMAINS_ALLOW = "https://perplexed-worker-production.anthonywu.workers.dev"
+
+[env.production]
+workers_dev = true
+
+
+[[env.production.containers]]
+max_instances = 2
+name = "perplexed-container"
+class_name = "PerplexedContainer"
+image = "../../Dockerfile-cloudflare"
+
+
+[[env.production.durable_objects.bindings]]
+name = "PERPLEXED_CONTAINER"
+class_name = "PerplexedContainer"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PerplexedContainer"]

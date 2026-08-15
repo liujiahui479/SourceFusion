@@ -1,0 +1,34 @@
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ENV UV_PYTHON_DOWNLOADS=never
+
+COPY backend /app/backend
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    grep PRETTY_NAME /etc/os-release && \
+    python -V && \
+    echo $(uv --version) && \
+    uv pip install --python /usr/local/bin/python -r /app/backend/requirements.txt && \
+    ls -ald /app/backend/* && \
+    gunicorn --version && \
+    python -c 'import groq'
+
+
+WORKDIR /app/backend
+EXPOSE 30001
+CMD [ \
+    "gunicorn", \
+    "--bind", \
+    "0.0.0.0:30001", \
+    "--workers", \
+    "4", \
+    "--worker-class", \
+    "uvicorn.workers.UvicornWorker", \
+    "--max-requests", \
+    "1000", \
+    "--max-requests-jitter", \
+    "50", \
+    "fastapi_app:app" \
+]
